@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rock Paper Scissors Lizard Spock by M.Kehinde</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-image: url('https://www.w3schools.com/w3images/lights.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            color: #fff;
+        }
+        button { margin: 5px; padding: 10px; }
+        #gameArea {
+            display: none;
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Rock Paper Scissors Lizard Spock by M. Kehinde</h1>
+
+<label for="rounds">Number of rounds to play:</label>
+<input type="number" id="rounds" min="1" value="3">
+<button id="startBtn">Start Game</button>
+
+<div id="gameArea">
+    
+    <h3>Rounds Remaining: <span id="roundsLeft"></span></h3>
+
+    <div>
+        <p>Choose your play:</p>
+        <button class="playBtn" data-choice="Rock">Rock</button>
+        <button class="playBtn" data-choice="Paper">Paper</button>
+        <button class="playBtn" data-choice="Scissors">Scissors</button>
+        <button class="playBtn" data-choice="Lizard">Lizard</button>
+        <button class="playBtn" data-choice="Spock">Spock</button>
+    </div>
+
+    <p>Computer chose: <span id="computerChoice">---</span></p>
+    <p>Round Result: <span id="roundResult">---</span></p>
+    <p>Score - You: <span id="playerScore">0</span> | Computer: <span id="computerScore">0</span></p>
+
+    <h3 id="finalResult"></h3>
+     <img src="https://repository-images.githubusercontent.com/194540172/75fd1300-9b66-11e9-8569-0768e6667775" alt="Additional Image" 
+
+</div>
+
+<script>
+    const startBtn = document.getElementById('startBtn');
+    const roundsInput = document.getElementById('rounds');
+    const gameArea = document.getElementById('gameArea');
+    const roundsLeft = document.getElementById('roundsLeft');
+    const computerChoiceField = document.getElementById('computerChoice');
+    const roundResultField = document.getElementById('roundResult');
+    const playerScoreField = document.getElementById('playerScore');
+    const computerScoreField = document.getElementById('computerScore');
+    const finalResultField = document.getElementById('finalResult');
+
+    const playButtons = document.querySelectorAll('.playBtn');
+
+    const choices = ['Rock', 'Paper', 'Scissors', 'Lizard', 'Spock'];
+    let totalRounds = 0;
+    let remainingRounds = 0;
+    let playerScore = 0;
+    let computerScore = 0;
+
+    const rules = {
+        Rock: ['Scissors', 'Lizard'],
+        Paper: ['Rock', 'Spock'],
+        Scissors: ['Paper', 'Lizard'],
+        Lizard: ['Spock', 'Paper'],
+        Spock: ['Scissors', 'Rock']
+    };
+
+    startBtn.onclick = () => {
+        totalRounds = parseInt(roundsInput.value);
+        if (isNaN(totalRounds) || totalRounds <= 0) {
+            alert('Please enter a valid number of rounds.');
+            return;
+        }
+        remainingRounds = totalRounds;
+        playerScore = 0;
+        computerScore = 0;
+        roundsLeft.textContent = remainingRounds;
+        playerScoreField.textContent = playerScore;
+        computerScoreField.textContent = computerScore;
+        computerChoiceField.textContent = '---';
+        roundResultField.textContent = '---';
+        finalResultField.textContent = '';
+        gameArea.style.display = 'block';
+    };
+
+    playButtons.forEach(btn => {
+        btn.onclick = () => {
+            if (remainingRounds <= 0) return;
+
+            const playerChoice = btn.dataset.choice;
+            const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+            computerChoiceField.textContent = computerChoice;
+
+            let result = '';
+
+            if (playerChoice === computerChoice) {
+                result = `It's a tie! Both chose ${playerChoice}.`;
+            } else if (rules[playerChoice].includes(computerChoice)) {
+                result = `You win! ${playerChoice} beats ${computerChoice}.`;
+                playerScore++;
+            } else {
+                result = `Computer wins! ${computerChoice} beats ${playerChoice}.`;
+                computerScore++;
+            }
+
+            roundResultField.textContent = result;
+            playerScoreField.textContent = playerScore;
+            computerScoreField.textContent = computerScore;
+
+            remainingRounds--;
+            roundsLeft.textContent = remainingRounds;
+
+            if (remainingRounds === 0) {
+                if (playerScore > computerScore) {
+                    finalResultField.textContent = `You win the game! You won ${playerScore} out of ${totalRounds} rounds YAYYYYY🥳.`;
+                } else if (computerScore > playerScore) {
+                    finalResultField.textContent = `Computer wins the game! Computer won ${computerScore} out of ${totalRounds} rounds EUGHHH🫩.`;
+                } else {
+                    finalResultField.textContent = `It's a tie overall! Both won ${playerScore} rounds UGHHHHH☹️.`;
+                }
+            }
+        };
+    });
+</script>
+
+</body>
+</html>
